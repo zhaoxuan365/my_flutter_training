@@ -1,9 +1,7 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
+import 'pages/drop_down_menu_demo.dart';
 import 'pages/drop_down_popup_demo.dart';
-import 'widget_invallid/drop_down_menu_route.dart';
 
 void main() {
   runApp(const MyApp());
@@ -78,49 +76,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _body() {
     List<Widget> list = [];
-    list.add(_item(
-      text: 'drop down popup',
-      tapCallback: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              return const DropDownPopupDemo();
-            },
-          ),
-        );
-      },
-    ));
+    initData(list);
     return ListView(
       padding: const EdgeInsets.all(16),
       children: list,
-    );
-  }
-
-  void showPopup({required GlobalKey globalKey}) {
-    var currentContext = globalKey.currentContext;
-    if (currentContext == null) {
-      return;
-    }
-    var renderObject = currentContext.findRenderObject();
-    if (renderObject == null) {
-      return;
-    }
-    RenderBox renderBox = renderObject as RenderBox;
-    Rect box = renderBox.localToGlobal(Offset.zero) & renderBox.size;
-    Navigator.push(
-      context,
-      DropDownMenuRoute(
-        position: box,
-        //弹窗位置信息
-        menuWidth: 300,
-        //弹窗宽度
-        menuHeight: 200,
-        //弹窗高度
-        offset: 0,
-        //偏移量
-        itemView: _popup(),
-      ),
     );
   }
 
@@ -154,5 +113,35 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
     );
+  }
+
+  void initData( List<Widget> list) {
+    list.add(_item(
+      text: 'drop down menu',
+      tapCallback: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return const DropDownMenuDemo();
+            },
+          ),
+        );
+      },
+    ));
+
+    list.add(_item(
+      text: 'drop down popup',
+      tapCallback: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return const DropDownPopupDemo();
+            },
+          ),
+        );
+      },
+    ));
   }
 }

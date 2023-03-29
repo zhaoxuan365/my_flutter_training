@@ -1,9 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../widget/drop_down_header.dart';
-import '../widget/drop_down_menu.dart';
-import '../widget/drop_down_menu_controller.dart';
+import '../widget/drop_down_popup/Popup.dart';
+import '../widget/drop_down_popup/PopupChild.dart';
 
 class DropDownPopupDemo extends StatefulWidget {
   const DropDownPopupDemo({super.key});
@@ -15,114 +13,158 @@ class DropDownPopupDemo extends StatefulWidget {
 }
 
 class _DropDownPopupDemoState extends State<DropDownPopupDemo> {
-  final DropdownMenuController _dropdownMenuController =
-      DropdownMenuController();
-  final GlobalKey _stackKey = GlobalKey();
+  ///给获取详细信息的widget设置一个key
+  GlobalKey iconKey = GlobalKey();
+
+  ///获取位置，给后续弹窗设置位置
+  late Offset iconOffset;
+
+  ///获取size 后续计算弹出位置
+  late Size iconSize;
+
+  ///接受弹窗类构造成功传递来的关闭参数
+  late Function closeModel;
 
   @override
   Widget build(BuildContext context) {
+    ///等待widget初始化完成
+    WidgetsBinding.instance.addPostFrameCallback((duration) {
+      var currentContext = iconKey.currentContext;
+      if (currentContext == null) {
+        return;
+      }
+      var renderObject = currentContext.findRenderObject();
+      if (renderObject == null) {
+        return;
+      }
+
+      ///通过key获取到widget的位置
+      RenderBox box = renderObject as RenderBox;
+
+      ///获取widget的高宽
+      iconSize = box.size;
+
+      ///获取位置
+      iconOffset = box.localToGlobal(Offset.zero);
+    });
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('DropDownPopupDemo'),
+        actions: [
+          IconButton(
+            key: iconKey,
+            icon: const Icon(
+              Icons.favorite,
+              color: Colors.red,
+            ),
+            onPressed: () {
+              showModel(context);
+            },
+          ),
+        ],
       ),
-      body: _body(),
+      body: const SizedBox(),
     );
   }
 
-  Widget _body() {
-    return Stack(
-      key: _stackKey,
-      children: [
-        Column(
-          children: [
-            DropDownHeader(
-              items: [
-                DropDownHeaderItem('left'),
-                DropDownHeaderItem('right'),
-              ],
-              controller: _dropdownMenuController,
-              stackKey: _stackKey,
-            ),
-            const Expanded(
-              child: SizedBox(),
-            ),
-          ],
+  ///播放动画
+  void showModel(BuildContext context) {
+    /// 设置传入弹窗的高宽
+    // double _width = (MediaQuery.of(context).size.width);
+    double height = 300;
+    double width = 150;
+    double marginHorizontal = 16;
+    Navigator.push(
+      context,
+      Popup(
+        child: PopupChild(
+          left: width >= iconOffset.dx
+              ? marginHorizontal
+              : iconOffset.dx - width + iconSize.width / 1.2,
+          top: iconOffset.dy + iconSize.height / 1.3,
+          right: marginHorizontal,
+          offset: Offset(width / 2, -height / 2),
+          child: buildMenu(
+            width,
+            height,
+          ),
+          fun: (close) {
+            closeModel = close;
+          },
         ),
-        DropDownMenu(
-          controller: _dropdownMenuController,
-          menus: [
-            DropdownMenuBuilder(
-              dropDownWidget: Container(
-                color: Colors.green,
-                margin: EdgeInsets.only(
-                  left: 15,
-                  right: (15 + (MediaQuery.of(context).size.width / 2)),
-                ),
-              ),
-              dropDownHeight: 200,
+      ),
+    );
+  }
+
+  ///构造传入的widget
+  Widget buildMenu(double width, double height) {
+    ///构造List
+    List list = [1, 2, 3, 4, 5];
+
+    return Stack(
+      children: [
+        SizedBox(
+          width: width,
+          height: height,
+        ),
+        Positioned(
+          right: 0,
+          top: 0,
+          child: Container(
+            width: 20,
+            height: 20,
+            transform: Matrix4.rotationZ(45 * 3.14 / 180),
+            decoration: BoxDecoration(
+              color: const Color.fromRGBO(46, 53, 61, 1),
+              borderRadius: BorderRadius.circular(5),
             ),
-            DropdownMenuBuilder(
-              dropDownWidget: Container(
-                color: Colors.yellow,
-                child: CustomScrollView(
-                  slivers: [
-                    SliverAppBar(
-                      automaticallyImplyLeading: false,
-                      pinned: true,
-                      elevation: 0,
-                      flexibleSpace: Container(
+          ),
+        ),
+
+        ///菜单内容
+        Positioned(
+          left: 0,
+          top: 10,
+          bottom: 0,
+          right: 0,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+            // width: width,
+            // height: height,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: const Color.fromRGBO(46, 53, 61, 1),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: list
+                  .map<Widget>(
+                    (e) => InkWell(
+                      child: Container(
                         width: double.infinity,
-                        height: double.infinity,
-                        color: Colors.black,
-                      ),
-                    ),
-                    SliverFixedExtentList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) => Container(
-                          alignment: Alignment.center,
-                          child: Text('$index'),
+                        alignment: Alignment.center,
+                        child: Text(
+                          '选项${e.toString()}',
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 14,
+                          ),
                         ),
-                        childCount: 20,
                       ),
-                      itemExtent: 50,
+                      onTap: () async {
+                        await Future.delayed(const Duration(milliseconds: 10))
+                            .then(
+                          (value) => {
+                            // todo
+                          },
+                        );
+                        await closeModel();
+                      },
                     ),
-                  ],
-                ),
-              ),
-              dropDownHeight: 300,
+                  )
+                  .toList(),
             ),
-            // DropdownMenuBuilder(
-            //   dropDownWidget: Container(
-            //     color: Colors.yellow,
-            //     child: Column(
-            //       children: [
-            //         Expanded(
-            //           flex: 50 * 100 ~/ 300,
-            //           child: Container(
-            //             width: double.infinity,
-            //             height: double.infinity,
-            //             color: Colors.black,
-            //           ),
-            //         ),
-            //         Expanded(
-            //           flex: 100 - ((50 * 100 ~/ 300)),
-            //           child: ListView.builder(
-            //             itemCount: 20,
-            //             itemExtent: 50,
-            //             itemBuilder: (BuildContext context, int index) {
-            //               return Container(
-            //                 alignment: Alignment.center,
-            //                 child: Text('$index'),
-            //               );
-            //             },
-            //           ),
-            //         ),
-            //       ],
-            //     ),
-            //   ),
-            //   dropDownHeight: 300,
-            // ),
-          ],
+          ),
         ),
       ],
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_flutter_training/pages/circle_progress_bar_demo.dart';
 
 import 'pages/drop_down_menu_demo.dart';
 import 'pages/drop_down_popup_demo.dart';
@@ -115,33 +116,53 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void initData( List<Widget> list) {
-    list.add(_item(
-      text: 'drop down menu',
-      tapCallback: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              return const DropDownMenuDemo();
-            },
-          ),
-        );
-      },
-    ));
+  void initData(List<Widget> list) {
+    list.add(
+      _item(
+        text: 'drop down menu',
+        tapCallback: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return const DropDownMenuDemo();
+              },
+            ),
+          );
+        },
+      ),
+    );
 
-    list.add(_item(
-      text: 'drop down popup',
-      tapCallback: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              return const DropDownPopupDemo();
-            },
-          ),
-        );
-      },
-    ));
+    list.add(
+      _item(
+        text: 'drop down popup',
+        tapCallback: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return const DropDownPopupDemo();
+              },
+            ),
+          );
+        },
+      ),
+    );
+
+    list.add(
+      _item(
+        text: 'CircleProgressBar',
+        tapCallback: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return CircleProgressBarDemo();
+              },
+            ),
+          );
+        },
+      ),
+    );
   }
 }

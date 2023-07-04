@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:my_flutter_training/pages/circle_progress_bar_demo.dart';
 
 import 'pages/drop_down_menu_demo.dart';
 import 'pages/drop_down_popup_demo.dart';
+import 'pages/html_webview_demo.dart';
 import 'pages/tab_bar_demo.dart';
 import 'pages/text_circle_progress_bar_demo.dart';
 
 void main() {
-  runApp(const MyApp());
+  // 注册Flutter插件
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    runApp(const MyApp());
+  });
+  // runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -192,6 +200,22 @@ class _MyHomePageState extends State<MyHomePage> {
             MaterialPageRoute(
               builder: (context) {
                 return TabBarDemo();
+              },
+            ),
+          );
+        },
+      ),
+    );
+
+    list.add(
+      _item(
+        text: 'HtmlWebViewDemo',
+        tapCallback: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return HtmlWebViewDemo();
               },
             ),
           );

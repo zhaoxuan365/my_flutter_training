@@ -4,6 +4,7 @@ import 'package:my_flutter_training/pages/circle_progress_bar_demo.dart';
 import 'pages/drop_down_menu_demo.dart';
 import 'pages/drop_down_popup_demo.dart';
 import 'pages/tab_bar_demo.dart';
+import 'pages/text_circle_progress_bar_demo.dart';
 
 void main() {
   runApp(const MyApp());
@@ -103,7 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          color: Colors.lightGreen,
+          color: Colors.blue,
         ),
         margin: const EdgeInsets.only(top: 16),
         child: Text(
@@ -159,6 +160,22 @@ class _MyHomePageState extends State<MyHomePage> {
             MaterialPageRoute(
               builder: (context) {
                 return CircleProgressBarDemo();
+              },
+            ),
+          );
+        },
+      ),
+    );
+
+    list.add(
+      _item(
+        text: 'TextCircleProgressBar',
+        tapCallback: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return TextCircleProgressBarDemo();
               },
             ),
           );

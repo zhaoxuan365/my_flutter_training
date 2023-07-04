@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'circle_progress_bar.dart';
+import '../widget/circle_progress_bar.dart';
 
 class CircleProgressBarDemo extends StatelessWidget {
   @override

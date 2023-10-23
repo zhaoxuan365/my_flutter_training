@@ -20,16 +20,23 @@ class _DebounceButtonWithIndeterminateTimeIntervalState
     });
   }
 
-  void _onButtonPressed() async {
+  void _disableButton() {
     setState(() {
       _isButtonDisabled = true;
     });
+  }
 
-    // 调用传入的耗时操作
-    await widget.timeConsumingOperation();
+  void _onButtonPressed() async {
 
-    // 接口请求完成后，再次启用按钮
-    _enableButton();
+    if (!_isButtonDisabled) {
+      _disableButton(); // 先禁用按钮
+
+      // 调用传入的耗时操作
+      await widget.timeConsumingOperation();
+
+      // 接口请求完成后，再次启用按钮
+      _enableButton();
+    }
   }
 
   @override
